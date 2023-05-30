@@ -8,5 +8,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('/article', [ArticlesController::class, 'store'])->name('article.store');
+Route::prefix('api')->group(function() {
+    Route::post('article', [ArticlesController::class, 'store'])->name('article.store')->middleware('ip.limit');
+});
