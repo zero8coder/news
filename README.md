@@ -13,3 +13,5 @@ DB_DATABASE=news
 ```angular2html
 php artisan migrate
 ```
+
+1
