@@ -14,4 +14,5 @@ DB_DATABASE=news
 php artisan migrate
 ```
 
-1
+
+### 表
