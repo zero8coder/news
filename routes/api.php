@@ -10,4 +10,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::prefix('api')->group(function() {
     Route::post('article', [ArticlesController::class, 'store'])->name('article.store')->middleware('ip.limit');
+    Route::post('articles', [ArticlesController::class, 'batchStore'])->name('article.batch.store')->middleware('ip.limit');
+
 });
