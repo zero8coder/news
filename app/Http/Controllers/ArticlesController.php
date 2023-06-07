@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ArticleBatchStoreRequest;
 use App\Models\Article;
+use Carbon\Carbon;
 use Exception;
 use DB;
 use Log;
@@ -28,6 +29,10 @@ class ArticlesController extends Controller
                 $filteredData = array_filter($chunk_data, function ($item) use ($existTitles) {
                     return !in_array($item['title'], $existTitles);
                 });
+                foreach ($filteredData as &$item) {
+                    $item['created_at'] = Carbon::now();
+                    $item['updated_at'] = Carbon::now();
+                }
                 DB::table('articles')->insert($filteredData);
                 DB::commit();
                 return response()->json(['code' => 200, 'msg' => '成功']);
