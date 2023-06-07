@@ -28,7 +28,7 @@ class AddArticleTest extends TestCase
     public function test_batch_add_article()
     {
         $articles = Article::factory()->count(50)->make();
-        $response = $this->post(route('article.batch.store'), $articles->toArray());
+        $response = $this->post(route('article.batch.store'), ['data' => $articles->toArray()]);
         $response->assertStatus(200);
     }
 }

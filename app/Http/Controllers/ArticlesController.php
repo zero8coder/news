@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ArticleBatchStoreRequest;
 use App\Models\Article;
 use Exception;
 use DB;
@@ -13,32 +14,31 @@ class ArticlesController extends Controller
     {
         $article->fill(request()->all());
         $article->save();
-        return response()->json(['code'=> 200 , 'data' => $article]);
+        return response()->json(['code' => 200, 'data' => $article]);
     }
 
-    public function batchStore()
+    public function batchStore(ArticleBatchStoreRequest $request)
     {
-        $chunk_data = array_chunk(request()->all(), 50);
-        foreach ($chunk_data as $data) {
+        $data = $request->input('data');
+        $chunk_datas = array_chunk($data, 50);
+        foreach ($chunk_datas as $chunk_data) {
             DB::beginTransaction();
             try {
-                $existTitles = Article::whereIn('title', array_column($data, 'title'))->pluck('title')->toArray();
-                $filteredData = array_filter($data, function ($item) use ($existTitles) {
+                $existTitles = Article::whereIn('title', array_column($chunk_data, 'title'))->pluck('title')->toArray();
+                $filteredData = array_filter($chunk_data, function ($item) use ($existTitles) {
                     return !in_array($item['title'], $existTitles);
                 });
                 DB::table('articles')->insert($filteredData);
                 DB::commit();
-                return response()->json(['code'=> 200 , 'msg' => '成功']);
+                return response()->json(['code' => 200, 'msg' => '成功']);
             } catch (Exception $e) {
                 DB::rollback();
-                Log::error('batchStore', $e->getMessage());
-                return response()->json(['code'=> 3001 , 'msg' => '失败']);
+                Log::error('batchStoreError', [$e->getMessage()]);
+                return response()->json(['code' => 3001, 'msg' => '失败']);
 
             }
         }
-        
 
-        
 
     }
 }
