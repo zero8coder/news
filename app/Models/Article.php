@@ -16,4 +16,10 @@ class Article extends Model
         'source',
         'url'
     ];
+
+    const SOURCE_WEIBO = 1;
+
+    public static $sourceMap = [
+        self::SOURCE_WEIBO => '微博'
+    ];
 }

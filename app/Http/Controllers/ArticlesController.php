@@ -44,6 +44,12 @@ class ArticlesController extends Controller
             }
         }
 
+    }
 
+    public function weibo()
+    {
+        $weiboHost = 'https://s.weibo.com';
+        $weibos = Article::where('source', Article::SOURCE_WEIBO)->where('created_at', '>', Carbon::today()->toDateString())->get();
+        return view('weibo', compact('weiboHost', 'weibos'));
     }
 }
